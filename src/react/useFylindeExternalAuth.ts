@@ -1,22 +1,22 @@
 import { useState, useEffect } from "react";
-import { SaleorExternalAuth } from "../SaleorExternalAuth";
+import { FylindeExternalAuth } from "../FylindeExternalAuth";
 import { ExternalProvider } from "../types";
 
-export type SaleorExternalAuthState =
+export type FylindeExternalAuthState =
   | { loading: true; authURL?: undefined; error?: undefined }
   | { loading: false; authURL: string; error?: undefined }
   | { loading: false; authURL?: undefined; error: unknown };
 
-export const useSaleorExternalAuth = ({
-  saleorURL,
+export const useFylindeExternalAuth = ({
+  fylindeURL,
   provider,
   redirectURL,
 }: {
-  saleorURL: string;
+  fylindeURL: string;
   provider: ExternalProvider;
   redirectURL: string;
 }) => {
-  const [state, setState] = useState<SaleorExternalAuthState>({
+  const [state, setState] = useState<FylindeExternalAuthState>({
     authURL: undefined,
     error: undefined,
     loading: true,
@@ -25,7 +25,7 @@ export const useSaleorExternalAuth = ({
   useEffect(() => {
     const triggerExternalAuth = async () => {
       try {
-        const auth = new SaleorExternalAuth(saleorURL, provider);
+        const auth = new FylindeExternalAuth(fylindeURL, provider);
         const result = await auth.initiate({ redirectURL });
 
         setState({ authURL: result, loading: false });
@@ -39,7 +39,7 @@ export const useSaleorExternalAuth = ({
     };
 
     void triggerExternalAuth();
-  }, [saleorURL]);
+  }, [fylindeURL]);
 
   return state;
 };

@@ -1,14 +1,28 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-
+import type { Request, Response } from "express";
 import { serialize } from "cookie";
-import { SaleorExternalAuth } from "../SaleorExternalAuth";
+import { FylindeExternalAuth } from "../FylindeExternalAuth";
 
-export const createSaleorExternalAuthHandler =
-  (auth: SaleorExternalAuth) => async (req: NextApiRequest, res: NextApiResponse) => {
-    const { state, code } = req.query as { state: string; code: string };
+export const createFylindeExternalAuthHandler =
+  (auth: FylindeExternalAuth) => async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { state, code } = req.query as { state?: string; code?: string };
 
-    const { token } = await auth.obtainAccessToken({ state, code });
+      if (!state || !code) {
+        res.status(400).json({ error: "Missing state or code in query parameters." });
+        return;
+      }
 
-    res.setHeader("Set-Cookie", serialize("token", token, { path: "/" }));
-    res.redirect("/");
+      const response = await auth.obtainAccessToken({ state, code });
+
+      if (!response || !response.token) {
+        res.status(500).json({ error: "Failed to obtain access token." });
+        return;
+      }
+
+      res.setHeader("Set-Cookie", serialize("token", response.token, { path: "/", httpOnly: true, secure: true, sameSite: "lax" }));
+      res.redirect("/");
+    } catch (error) {
+      console.error("Error in external auth handler:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
   };

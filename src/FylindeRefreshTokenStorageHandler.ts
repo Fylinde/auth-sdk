@@ -2,17 +2,17 @@ import type { StorageRepository } from "./types";
 
 /* auth state when user signs in / out */
 export const getStorageAuthEventKey = (prefix?: string) =>
-  [prefix, "saleor_storage_auth_change"].filter(Boolean).join("+");
+  [prefix, "fylinde_storage_auth_change"].filter(Boolean).join("+");
 export const getStorageAuthStateKey = (prefix?: string) =>
-  [prefix, "saleor_auth_module_auth_state"].filter(Boolean).join("+");
+  [prefix, "fylinde_auth_module_auth_state"].filter(Boolean).join("+");
 export const getRefreshTokenKey = (prefix?: string) =>
-  [prefix, "saleor_auth_module_refresh_token"].filter(Boolean).join("+");
+  [prefix, "fylinde_auth_module_refresh_token"].filter(Boolean).join("+");
 
 export type AuthState = "signedIn" | "signedOut";
 
-export type SaleorAuthEvent = CustomEvent<{ authState: AuthState }>;
+export type FylindeAuthEvent = CustomEvent<{ authState: AuthState }>;
 
-export class SaleorRefreshTokenStorageHandler {
+export class FylindeRefreshTokenStorageHandler {
   constructor(
     private storage: StorageRepository,
     private prefix?: string,

@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { SaleorAuthClient } from "../SaleorAuthClient";
+import { FylindeAuthClient } from "../FylindeAuthClient";
 
 export const createSafeContext = <TValue>() => {
   const context = createContext<TValue | undefined>(undefined);
@@ -15,6 +15,6 @@ export const createSafeContext = <TValue>() => {
   return [useSafeContext, context.Provider] as const;
 };
 
-const [useSaleorAuthContext, Provider] = createSafeContext<SaleorAuthClient>();
+const [useFylindeAuthContext, Provider] = createSafeContext<FylindeAuthClient>();
 
-export { useSaleorAuthContext, Provider };
+export { useFylindeAuthContext, Provider };

@@ -1,29 +1,30 @@
 {
-  "name": "@saleor/auth-sdk",
+  "name": "@fylinde/auth-sdk",
   "version": "1.0.1",
-  "description": "Auth SDK for Saleor",
+  "description": "Auth SDK for Fylinde",
   "sideEffects": false,
   "types": "index.d.ts",
   "main": "index.js",
   "module": "index.mjs",
   "scripts": {
-    "prepublishOnly": "pnpm build",
-    "prebuild": "pnpm clean",
+    "prepublishOnly": "node scripts/run-pm.js build",
+    "prebuild": "node scripts/run-pm.js clean",
     "watch": "tsup-node src/* --format esm,cjs --dts --watch",
-    "build": "tsup-node src/* --format esm,cjs --dts && clear-package-json package.json -o dist/package.json --fields publishConfig && pnpm copy-files",
+    "build": "tsup-node src/* --format esm,cjs --dts && clear-package-json package.json -o dist/package.json --fields publishConfig && node scripts/run-pm.js copy-files",
     "clean": "rm -rf ./dist/*",
     "test": "vitest",
-    "lint": "prettier --write . && eslint --fix src ",
+    "lint": "prettier --write . && eslint --fix src",
     "lint:ci": "prettier --check . && eslint src",
     "release": "cd dist && ../node_modules/.bin/release-it",
     "copy-files": "cp README.md dist/README.md"
   },
   "keywords": [],
-  "author": "Saleor Team",
+  "author": "Fylinde Team",
   "license": "BSD-3-Clause",
   "dependencies": {
     "@graphql-typed-document-node/core": "^3.2.0",
     "cookie": "^0.6.0",
+    "express": "^4.21.2",
     "graphql": "^16.8.1"
   },
   "peerDependencies": {
@@ -50,6 +51,7 @@
     "@graphql-typed-document-node/core": "^3.2.0",
     "@types/cookie": "^0.5.4",
     "@types/debug": "^4.1.12",
+    "@types/express": "^5.0.0",
     "@types/node": "^20.9.1",
     "@types/node-fetch": "^2.6.9",
     "@types/react": "^18.2.37",
@@ -112,13 +114,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/saleor/auth-sdk.git"
+    "url": "git+https://github.com/fylinde/auth-sdk.git"
   },
   "bugs": {
-    "url": "https://github.com/saleor/auth-sdk/issues"
+    "url": "https://github.com/fylinde/auth-sdk/issues"
   },
-  "homepage": "https://github.com/saleor/auth-sdk#readme",
+  "homepage": "https://github.com/fylinde/auth-sdk#readme",
   "engines": {
     "node": ">=18.0.0"
-  }
+  },
+  "packageManager": "npm"
 }

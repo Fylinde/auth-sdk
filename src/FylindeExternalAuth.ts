@@ -25,9 +25,9 @@ export class GraphQLError extends Error {
   }
 }
 
-export class SaleorExternalAuth {
+export class FylindeExternalAuth {
   constructor(
-    private saleorURL: string,
+    private fylindeURL: string,
     private provider: ExternalProvider,
   ) {}
 
@@ -35,7 +35,7 @@ export class SaleorExternalAuth {
     query: TypedDocumentString<TResult, TVariables>,
     variables: TVariables,
   ) {
-    const response = await fetch(this.saleorURL, getRequestData(query, variables));
+    const response = await fetch(this.fylindeURL, getRequestData(query, variables));
 
     const result = (await response.json()) as GraphQLResponse<TResult>;
 

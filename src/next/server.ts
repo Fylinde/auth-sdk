@@ -1,25 +1,36 @@
 import type { StorageRepository } from "../types";
-import { cookies } from "next/headers";
+import cookie from "cookie"; // ✅ Use `cookie` package for parsing
+import type { Request, Response } from "express"; // ✅ Use Express for server-side handling
 
-export const getNextServerCookiesStorage = (options: { secure?: boolean } = {}): StorageRepository => {
+export const getServerCookiesStorage = (
+  req: Request,
+  res: Response,
+  options: { secure?: boolean } = {}
+): StorageRepository => {
   const secure = options.secure ?? true;
 
-  const cache = new Map<string, string>();
+  // ✅ Parse incoming cookies
+  const cookiesData = cookie.parse(req.headers.cookie || "");
+  const cache = new Map<string, string>(Object.entries(cookiesData));
+
   return {
     getItem(key) {
-      // We need to cache the value because cookies() returns stale data
-      // if cookies().set(…) is called in the same request.
-      return cache.get(key) ?? cookies().get(key)?.value ?? null;
+      return cache.get(key) ?? null;
     },
     removeItem(key) {
       cache.delete(key);
-      cookies().delete(key);
+      res.clearCookie(key);
     },
     setItem(key, value) {
       try {
         cache.set(key, value);
         const expires = tryGetExpFromJwt(value);
-        cookies().set(key, value, { httpOnly: true, sameSite: "lax", secure, expires });
+        res.cookie(key, value, {
+          httpOnly: true,
+          sameSite: "lax",
+          secure,
+          expires,
+        });
       } catch {
         // noop
       }

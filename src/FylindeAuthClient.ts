@@ -1,4 +1,4 @@
-import { SaleorRefreshTokenStorageHandler } from "./SaleorRefreshTokenStorageHandler";
+import { FylindeRefreshTokenStorageHandler } from "./FylindeRefreshTokenStorageHandler";
 import { getRequestData, getTokenIss, isExpiredToken } from "./utils";
 import type {
   FetchRequestInfo,
@@ -13,34 +13,34 @@ import type {
 import { invariant } from "./utils";
 import { PASSWORD_RESET, TOKEN_CREATE, TOKEN_REFRESH } from "./mutations";
 import cookie from "cookie";
-import { SaleorAccessTokenStorageHandler } from "./SaleorAccessTokenStorageHandler";
+import { FylindeAccessTokenStorageHandler } from "./FylindeAccessTokenStorageHandler";
 
-export interface SaleorAuthClientProps {
+export interface FylindeAuthClientProps {
   onAuthRefresh?: (isAuthenticating: boolean) => void;
-  saleorApiUrl: string;
+  fylindeApiUrl: string;
   refreshTokenStorage?: StorageRepository;
   accessTokenStorage?: StorageRepository;
   tokenGracePeriod?: number;
   defaultRequestInit?: RequestInit;
 }
 
-export class SaleorAuthClient {
+export class FylindeAuthClient {
   // we'll assume a generous time of 2 seconds for api to
   // process our request
   private tokenGracePeriod = 2000;
 
   private tokenRefreshPromise: null | Promise<Response> = null;
   private onAuthRefresh?: (isAuthenticating: boolean) => void;
-  private saleorApiUrl: string;
+  private fylindeApiUrl: string;
   /**
    * Persistent storage (for refresh token)
    */
-  private refreshTokenStorage: SaleorRefreshTokenStorageHandler | null;
+  private refreshTokenStorage: FylindeRefreshTokenStorageHandler | null;
 
   /**
    * Non-persistent storage for access token
    */
-  private acessTokenStorage: SaleorAccessTokenStorageHandler;
+  private acessTokenStorage: FylindeAccessTokenStorageHandler;
 
   private defaultRequestInit: RequestInit | undefined;
   /**
@@ -49,35 +49,35 @@ export class SaleorAuthClient {
    *  ```jsx
    *  useEffect(() => {
    *    return () => {
-   *      SaleorAuthClient.cleanup();
+   *      FylindeAuthClient.cleanup();
    *    }
    *  }, [])
    *  ```
    */
 
   constructor({
-    saleorApiUrl,
+    fylindeApiUrl,
     refreshTokenStorage,
     accessTokenStorage,
     onAuthRefresh,
     tokenGracePeriod,
     defaultRequestInit,
-  }: SaleorAuthClientProps) {
+  }: FylindeAuthClientProps) {
     this.defaultRequestInit = defaultRequestInit;
     if (tokenGracePeriod) {
       this.tokenGracePeriod = tokenGracePeriod;
     }
     this.onAuthRefresh = onAuthRefresh;
-    this.saleorApiUrl = saleorApiUrl;
+    this.fylindeApiUrl = fylindeApiUrl;
 
     const refreshTokenRepo =
       refreshTokenStorage ?? (typeof window !== "undefined" ? window.localStorage : undefined);
     this.refreshTokenStorage = refreshTokenRepo
-      ? new SaleorRefreshTokenStorageHandler(refreshTokenRepo, saleorApiUrl)
+      ? new FylindeRefreshTokenStorageHandler(refreshTokenRepo, fylindeApiUrl)
       : null;
 
     const accessTokenRepo = accessTokenStorage ?? getInMemoryAccessTokenStorage();
-    this.acessTokenStorage = new SaleorAccessTokenStorageHandler(accessTokenRepo, saleorApiUrl);
+    this.acessTokenStorage = new FylindeAccessTokenStorageHandler(accessTokenRepo, fylindeApiUrl);
   }
 
   cleanup = () => {
@@ -174,7 +174,7 @@ export class SaleorAuthClient {
 
     // this is the first failed request, initialize refresh
     this.tokenRefreshPromise = fetch(
-      this.saleorApiUrl,
+      this.fylindeApiUrl,
       getRequestData(TOKEN_REFRESH, { refreshToken }, { ...this.defaultRequestInit, ...requestInit }),
     );
     return this.fetchWithAuth(input, requestInit, additionalParams);
@@ -219,7 +219,7 @@ export class SaleorAuthClient {
     const refreshToken = this.refreshTokenStorage?.getRefreshToken();
 
     if (!this.acessTokenStorage.getAccessToken() && typeof document !== "undefined") {
-      // this flow is used by SaleorExternalAuth
+      // this flow is used by FylindeExternalAuth
       const tokenFromCookie = cookie.parse(document.cookie).token ?? null;
       if (tokenFromCookie) {
         this.acessTokenStorage.setAccessToken(tokenFromCookie);
@@ -245,7 +245,7 @@ export class SaleorAuthClient {
 
   resetPassword = async (variables: PasswordResetVariables, requestInit?: RequestInit) => {
     const response = await fetch(
-      this.saleorApiUrl,
+      this.fylindeApiUrl,
       getRequestData(PASSWORD_RESET, variables, { ...this.defaultRequestInit, ...requestInit }),
     );
 
@@ -254,7 +254,7 @@ export class SaleorAuthClient {
 
   signIn = async (variables: TokenCreateVariables, requestInit?: RequestInit) => {
     const response = await fetch(
-      this.saleorApiUrl,
+      this.fylindeApiUrl,
       getRequestData(TOKEN_CREATE, variables, { ...this.defaultRequestInit, ...requestInit }),
     );
 
@@ -265,7 +265,7 @@ export class SaleorAuthClient {
     this.acessTokenStorage.clearAuthStorage();
     this.refreshTokenStorage?.clearAuthStorage();
     if (typeof document !== "undefined") {
-      // this flow is used by SaleorExternalAuth
+      // this flow is used by FylindeExternalAuth
       document.cookie = cookie.serialize("token", "", {
         expires: new Date(0),
         path: "/",
@@ -274,7 +274,7 @@ export class SaleorAuthClient {
   };
 }
 
-export const createSaleorAuthClient = (props: SaleorAuthClientProps) => new SaleorAuthClient(props);
+export const createFylindeAuthClient = (props: FylindeAuthClientProps) => new FylindeAuthClient(props);
 
 function getInMemoryAccessTokenStorage(): StorageRepository {
   let accessToken: string | null = null;

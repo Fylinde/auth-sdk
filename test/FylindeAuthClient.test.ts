@@ -1,26 +1,29 @@
 import { it, describe, vi, expect } from "vitest";
-import { SaleorAuthClient } from "../src/SaleorAuthClient";
-import { getRefreshTokenKey } from "../src/SaleorRefreshTokenStorageHandler";
+import { FylindeAuthClient } from "../src/FylindeAuthClient";
+import { getRefreshTokenKey } from "../src/FylindeRefreshTokenStorageHandler";
 import type { StorageRepository } from "../src";
 
-describe("SaleorAuthClient", () => {
+describe("FylindeAuthClient", () => {
   const mockStorage = {
     getItem: vi.fn(),
     setItem: vi.fn(),
     removeItem: vi.fn(),
   } satisfies StorageRepository;
-  const masterStagingUrl = "https://master.staging.saleor.cloud/graphql/";
-  const otherApiUrl = "https://some-other-domain-auth-sdk.saleor.cloud/graphql/";
+  // const masterStagingUrl = "https://master.staging.saleor.cloud/graphql/";
+  // const otherApiUrl = "https://some-other-domain-auth-sdk.saleor.cloud/graphql/";
+  const masterStagingUrl = "http://localhost:8000/graphql/";
+  const otherApiUrl = "http://localhost:8000/auth/graphql/";
+
 
   it(`should fetch without authentication token`, async () => {
     const onAuthRefresh = vi.fn();
-    const saleorAuthClient = new SaleorAuthClient({
-      saleorApiUrl: masterStagingUrl,
+    const fylindeAuthClient = new FylindeAuthClient({
+      fylindeApiUrl: masterStagingUrl,
       refreshTokenStorage: mockStorage,
       onAuthRefresh,
     });
 
-    await saleorAuthClient.fetchWithAuth(masterStagingUrl, {
+    await fylindeAuthClient.fetchWithAuth(masterStagingUrl, {
       method: "POST",
       body: "{}",
     });
@@ -33,8 +36,8 @@ describe("SaleorAuthClient", () => {
 
   it(`should fetch with refresh token`, async () => {
     const onAuthRefresh = vi.fn();
-    const saleorAuthClient = new SaleorAuthClient({
-      saleorApiUrl: masterStagingUrl,
+    const fylindeAuthClient = new FylindeAuthClient({
+      fylindeApiUrl: masterStagingUrl,
       refreshTokenStorage: mockStorage,
       onAuthRefresh,
     });
@@ -61,7 +64,7 @@ describe("SaleorAuthClient", () => {
       return JSON.stringify({});
     });
 
-    await saleorAuthClient.fetchWithAuth(masterStagingUrl, {
+    await fylindeAuthClient.fetchWithAuth(masterStagingUrl, {
       method: "POST",
       body: "{}",
     });
@@ -73,8 +76,8 @@ describe("SaleorAuthClient", () => {
 
   it(`should not add auth token to external URLs`, async () => {
     const onAuthRefresh = vi.fn();
-    const saleorAuthClient = new SaleorAuthClient({
-      saleorApiUrl: masterStagingUrl,
+    const fylindeAuthClient = new FylindeAuthClient({
+      fylindeApiUrl: masterStagingUrl,
       refreshTokenStorage: mockStorage,
       onAuthRefresh,
     });
@@ -101,7 +104,7 @@ describe("SaleorAuthClient", () => {
       return JSON.stringify({});
     });
 
-    await saleorAuthClient.fetchWithAuth(otherApiUrl, {
+    await fylindeAuthClient.fetchWithAuth(otherApiUrl, {
       method: "POST",
       body: "{}",
     });
@@ -113,13 +116,13 @@ describe("SaleorAuthClient", () => {
 
   it(`should not read other domain's tokens`, async () => {
     const onAuthRefresh = vi.fn();
-    const saleorAuthClient = new SaleorAuthClient({
-      saleorApiUrl: otherApiUrl,
+    const fylindeAuthClient = new FylindeAuthClient({
+      fylindeApiUrl: otherApiUrl,
       refreshTokenStorage: mockStorage,
       onAuthRefresh,
     });
 
-    await saleorAuthClient.fetchWithAuth(otherApiUrl, {
+    await fylindeAuthClient.fetchWithAuth(otherApiUrl, {
       method: "POST",
       body: "{}",
     });
@@ -130,8 +133,8 @@ describe("SaleorAuthClient", () => {
 
   it(`should add auth token to external URLs when allowPassingTokenToThirdPartyDomains=true`, async () => {
     const onAuthRefresh = vi.fn();
-    const saleorAuthClient = new SaleorAuthClient({
-      saleorApiUrl: masterStagingUrl,
+    const fylindeAuthClient = new FylindeAuthClient({
+      fylindeApiUrl: masterStagingUrl,
       refreshTokenStorage: mockStorage,
       onAuthRefresh,
     });
@@ -158,7 +161,7 @@ describe("SaleorAuthClient", () => {
       return JSON.stringify({});
     });
 
-    await saleorAuthClient.fetchWithAuth(
+    await fylindeAuthClient.fetchWithAuth(
       otherApiUrl,
       {
         method: "POST",

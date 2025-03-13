@@ -1,17 +1,17 @@
 import { useEffect } from "react";
-import { type SaleorAuthEvent, getStorageAuthEventKey } from "../SaleorRefreshTokenStorageHandler";
+import { type FylindeAuthEvent, getStorageAuthEventKey } from "../FylindeRefreshTokenStorageHandler";
 
 interface UseAuthChangeProps {
-  saleorApiUrl: string;
+  fylindeApiUrl: string;
   onSignedIn?: () => void;
   onSignedOut?: () => void;
 }
 
 // used to handle client cache invalidation on login / logout and when
 // token refreshin fails
-export const useAuthChange = ({ saleorApiUrl, onSignedOut, onSignedIn }: UseAuthChangeProps) => {
-  const handleAuthChange = (event: SaleorAuthEvent) => {
-    const isCustomAuthEvent = event?.type === getStorageAuthEventKey(saleorApiUrl);
+export const useAuthChange = ({ fylindeApiUrl, onSignedOut, onSignedIn }: UseAuthChangeProps) => {
+  const handleAuthChange = (event: FylindeAuthEvent) => {
+    const isCustomAuthEvent = event?.type === getStorageAuthEventKey(fylindeApiUrl);
 
     if (!isCustomAuthEvent) {
       return;
@@ -32,10 +32,10 @@ export const useAuthChange = ({ saleorApiUrl, onSignedOut, onSignedIn }: UseAuth
     }
 
     // for current window
-    window.addEventListener(getStorageAuthEventKey(saleorApiUrl), handleAuthChange as EventListener);
+    window.addEventListener(getStorageAuthEventKey(fylindeApiUrl), handleAuthChange as EventListener);
 
     return () => {
-      window.removeEventListener(getStorageAuthEventKey(saleorApiUrl), handleAuthChange as EventListener);
+      window.removeEventListener(getStorageAuthEventKey(fylindeApiUrl), handleAuthChange as EventListener);
     };
   }, []);
 };

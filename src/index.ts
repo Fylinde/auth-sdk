@@ -1,3 +1,3 @@
-export * from "./SaleorAuthClient";
-export * from "./SaleorExternalAuth";
+export * from "./FylindeAuthClient";
+export * from "./FylindeExternalAuth";
 export * from "./types";

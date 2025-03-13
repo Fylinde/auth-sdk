@@ -1,23 +1,23 @@
 <div align="center">
-  <img width="150" alt="" src="https://github.com/saleor/auth-sdk/assets/1338731/c90a73d0-5ef1-4d09-9347-c5d02cd7244d">
+  <img width="150" alt="" src="https://github.com/fylinde/auth-sdk/assets/1338731/c90a73d0-5ef1-4d09-9347-c5d02cd7244d">
 </div>
 
 <div align="center">
   
-# Saleor Auth SDK
+# Fylinde Auth SDK
 
-Saleor Auth SDK integrates secure and customizable authentication and authorization into storefronts using Saleor.
+Fylinde Auth SDK integrates secure and customizable authentication and authorization into storefronts using Fylinde.
 
 **Below 3kB bundle size (gzipped).**
 
 </div>
 
 <div align="center">
-  <a href="https://www.npmjs.com/package/@saleor/auth-sdk">npm</a>
+  <a href="https://www.npmjs.com/package/@fylinde/auth-sdk">npm</a>
   <span> • </span>
-  <a href="https://docs.saleor.io/docs/3.x/api-usage/authentication">Docs</a>
+  <a href="https://docs.fylinde.io/docs/3.x/api-usage/authentication">Docs</a>
   <span> • </span>
-  <a href="https://twitter.com/getsaleor">Twitter</a>
+  <a href="https://twitter.com/getFylinde">Twitter</a>
   <span> • </span>
   <a href="https://discord.gg/H52JTZAtSH">Discord</a>
 </div>
@@ -34,18 +34,18 @@ Saleor Auth SDK integrates secure and customizable authentication and authorizat
 
 ### Next.js App Router
 
-Next.js 13+ App Router is the recommended way to use the Saleor Auth SDK. It is the easiest to set up and provides the best user experience.
+Next.js 13+ App Router is the recommended way to use the Fylinde Auth SDK. It is the easiest to set up and provides the best user experience.
 
-In order to use Saleor Auth SDK in React Server Components, the client needs to be created in the following way:
+In order to use Fylinde Auth SDK in React Server Components, the client needs to be created in the following way:
 
 ```ts
-import { createSaleorAuthClient } from "@saleor/auth-sdk";
-import { getNextServerCookiesStorage } from "@saleor/auth-sdk/next/server";
+import { createFylindeAuthClient } from "@fylinde/auth-sdk";
+import { getNextServerCookiesStorage } from "@fylinde/auth-sdk/next/server";
 
 const getServerAuthClient = () => {
   const nextServerCookiesStorage = getNextServerCookiesStorage();
-  return createSaleorAuthClient({
-    saleorApiUrl: "…",
+  return createFylindeAuthClient({
+    fylindeApiUrl: "…",
     refreshTokenStorage: nextServerCookiesStorage,
     accessTokenStorage: nextServerCookiesStorage,
   });
@@ -73,9 +73,9 @@ Logging in can be implemented via Server Actions:
 </form>
 ```
 
-Then, you can use `saleorAuthClient.fetchWithAuth` directly for any queries and mutations.
+Then, you can use `fylindeAuthClient.fetchWithAuth` directly for any queries and mutations.
 
-For a full working example, see the [Saleor Auth SDK example](https://github.com/saleor/example-auth-sdk/tree/app/ssr/page.tsx).
+For a full working example, see the [Fylinde Auth SDK example](https://github.com/fylinde/example-auth-sdk/tree/app/ssr/page.tsx).
 
 ### Next.js Pages Router with [Apollo Client](https://www.apollographql.com/docs/react/)
 
@@ -83,15 +83,15 @@ For a full working example, see the [Saleor Auth SDK example](https://github.com
   <summary>Step-by-step video tutorial</summary>
 
 Check the following [step-by-step video](https://www.youtube.com/watch?v=XY1t8JiPwk0) guide on how to set this up.
-[![Saleor Auth with Next.js](https://img.youtube.com/vi/t6nxBk7JHCw/0.jpg)](https://www.youtube.com/watch?v=XY1t8JiPwk0)
+[![Fylinde Auth with Next.js](https://img.youtube.com/vi/t6nxBk7JHCw/0.jpg)](https://www.youtube.com/watch?v=XY1t8JiPwk0)
 
 </details>
 
-When using Next.js (Pages Router) along with [Apollo Client](https://www.apollographql.com/docs/react/), there are two essential steps to setting up your application. First, you have to surround your application's root with two providers: `<SaleorAuthProvider>` and `<ApolloProvider>`.
+When using Next.js (Pages Router) along with [Apollo Client](https://www.apollographql.com/docs/react/), there are two essential steps to setting up your application. First, you have to surround your application's root with two providers: `<FylindeAuthProvider>` and `<ApolloProvider>`.
 
-`<SaleorAuthProvider>` comes from our React.js-auth package, located at `@saleor/auth-sdk/react`, and it needs to be set up with the Saleor auth client instance.
+`<FylindeAuthProvider>` comes from our React.js-auth package, located at `@fylinde/auth-sdk/react`, and it needs to be set up with the Fylinde auth client instance.
 
-The `<ApolloProvider>` comes from `@apollo/client` and it needs the live GraphQL client instance, which is enhanced with the authenticated `fetch` that comes from the Saleor auth client.
+The `<ApolloProvider>` comes from `@apollo/client` and it needs the live GraphQL client instance, which is enhanced with the authenticated `fetch` that comes from the Fylinde auth client.
 
 Lastly, you must run the `useAuthChange` hook. This links the `onSignedOut` and `onSignedIn` events.
 
@@ -100,18 +100,18 @@ Let's look at an example:
 ```tsx
 import { AppProps } from "next/app";
 import { ApolloProvider, ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
-import { createSaleorAuthClient } from "@saleor/auth-sdk";
-import { SaleorAuthProvider, useAuthChange } from "@saleor/auth-sdk/react";
+import { createFylindeAuthClient } from "@fylinde/auth-sdk";
+import { FylindeAuthProvider, useAuthChange } from "@fylinde/auth-sdk/react";
 
-const saleorApiUrl = "<your Saleor API URL>";
+const fylindeApiUrl = "<your fylinde API URL>";
 
-// Saleor Client
-const saleorAuthClient = createSaleorAuthClient({ saleorApiUrl });
+// Fylinde Client
+const FylindeAuthClient = createFylindeAuthClient({ fylindeApiUrl });
 
 // Apollo Client
 const httpLink = createHttpLink({
-  uri: saleorApiUrl,
-  fetch: saleorAuthClient.fetchWithAuth,
+  uri: fylindeApiUrl,
+  fetch: fylindeAuthClient.fetchWithAuth,
 });
 
 export const apolloClient = new ApolloClient({
@@ -121,7 +121,7 @@ export const apolloClient = new ApolloClient({
 
 export default function App({ Component, pageProps }: AppProps) {
   useAuthChange({
-    saleorApiUrl,
+    fylindeApiUrl,
     onSignedOut: () => apolloClient.resetStore(),
     onSignedIn: () => {
       apolloClient.refetchQueries({ include: "all" });
@@ -129,20 +129,20 @@ export default function App({ Component, pageProps }: AppProps) {
   });
 
   return (
-    <SaleorAuthProvider client={saleorAuthClient}>
+    <FylindeAuthProvider client={fylindeAuthClient}>
       <ApolloProvider client={apolloClient}>
         <Component {...pageProps} />
       </ApolloProvider>
-    </SaleorAuthProvider>
+    </FylindeAuthProvider>
   );
 }
 ```
 
-Then, in your register, login and logout forms you can use the auth methods (`signIn`, `signOut`, `isAuthenticating`) provided by the `useSaleorAuthContext()`. For example, `signIn` is usually triggered when submitting the login form credentials.
+Then, in your register, login and logout forms you can use the auth methods (`signIn`, `signOut`, `isAuthenticating`) provided by the `useFylindeAuthContext()`. For example, `signIn` is usually triggered when submitting the login form credentials.
 
 ```tsx
 import React, { FormEvent } from "react";
-import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
+import { useFylindeAuthContext } from "@fylinde/auth-sdk/react";
 import { gql, useQuery } from "@apollo/client";
 
 const CurrentUserDocument = gql`
@@ -161,7 +161,7 @@ const CurrentUserDocument = gql`
 `;
 
 export default function LoginPage() {
-  const { signIn, signOut } = useSaleorAuthContext();
+  const { signIn, signOut } = useFylindeAuthContext();
 
   const { data: currentUser, loading } = useQuery(CurrentUserDocument);
 
@@ -210,11 +210,11 @@ export default function LoginPage() {
 
 ### Next.js (Pages Router) with [urql](https://formidable.com/open-source/urql/)
 
-When using Next.js (Pages Router) along with [urql](https://formidable.com/open-source/urql/) client, there are two essential steps to setting up your application. First, you have to surround your application's root with two providers: `<SaleorAuthProvider>` and `<Provider>`.
+When using Next.js (Pages Router) along with [urql](https://formidable.com/open-source/urql/) client, there are two essential steps to setting up your application. First, you have to surround your application's root with two providers: `<FylindeAuthProvider>` and `<Provider>`.
 
-`<SaleorAuthProvider>` comes from our React.js-auth package, located at `@saleor/auth-sdk/react`, and it needs to be set up with the Saleor auth client.
+`<FylindeAuthProvider>` comes from our React.js-auth package, located at `@fylinde/auth-sdk/react`, and it needs to be set up with the Fylinde auth client.
 
-The `<Provider>` comes from `urql` and it needs the GraphQL client instance, which is enhanced with the authenticated `fetch` that comes from the Saleor auth client.
+The `<Provider>` comes from `urql` and it needs the GraphQL client instance, which is enhanced with the authenticated `fetch` that comes from the Fylinde auth client.
 
 Lastly, you must run the `useAuthChange` hook. This links the `onSignedOut` and `onSignedIn` events and is meant to refresh the GraphQL store and in-flight active GraphQL queries.
 
@@ -223,16 +223,16 @@ Let's look at an example:
 ```tsx
 import { AppProps } from "next/app";
 import { Provider, cacheExchange, fetchExchange, ssrExchange } from "urql";
-import { SaleorAuthProvider, useAuthChange } from "@saleor/auth-sdk/react";
+import { FylindeAuthProvider, useAuthChange } from "@fylinde/auth-sdk/react";
 
-const saleorApiUrl = "<your Saleor API URL>";
+const fylindeApiUrl = "<your Fylinde API URL>";
 
-const saleorAuthClient = createSaleorAuthClient({ saleorApiUrl });
+const fylindeAuthClient = createFylindeAuthClient({ fylindeApiUrl });
 
 const makeUrqlClient = () =>
   createClient({
-    url: saleorApiUrl,
-    fetch: saleorAuthClient.fetchWithAuth,
+    url: fylindeApiUrl,
+    fetch: fylindeAuthClient.fetchWithAuth,
     exchanges: [cacheExchange, fetchExchange],
   });
 
@@ -241,26 +241,26 @@ export default function App({ Component, pageProps }: AppProps) {
   const [urqlClient, setUrqlClient] = useState<Client>(makeUrqlClient());
 
   useAuthChange({
-    saleorApiUrl,
+    fylindeApiUrl,
     onSignedOut: () => setUrqlClient(makeUrqlClient()),
     onSignedIn: () => setUrqlClient(makeUrqlClient()),
   });
 
   return (
-    <SaleorAuthProvider client={saleorAuthClient}>
+    <FylindeAuthProvider client={fylindeAuthClient}>
       <Provider value={urqlClient}>
         <Component {...pageProps} />
       </Provider>
-    </SaleorAuthProvider>
+    </FylindeAuthProvider>
   );
 }
 ```
 
-Then, in your register, login and logout forms you can use the auth methods (`signIn`, `signOut`) provided by the `useSaleorAuthContext()`. For example, `signIn` is usually triggered when submitting the login form credentials.
+Then, in your register, login and logout forms you can use the auth methods (`signIn`, `signOut`) provided by the `useFylindeAuthContext()`. For example, `signIn` is usually triggered when submitting the login form credentials.
 
 ```tsx
 import React, { FormEvent } from "react";
-import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
+import { useFylindeAuthContext } from "@fylinde/auth-sdk/react";
 import { gql, useQuery } from "urql";
 
 const CurrentUserDocument = gql`
@@ -279,7 +279,7 @@ const CurrentUserDocument = gql`
 `;
 
 export default function LoginPage() {
-  const { signIn, signOut } = useSaleorAuthContext();
+  const { signIn, signOut } = useFylindeAuthContext();
 
   const [{ data: currentUser, fetching: loading }] = useQuery({
     query: CurrentUserDocument,
@@ -334,8 +334,8 @@ export default function LoginPage() {
 Setup `_app.tsx` as described above. In your login component trigger the external auth flow using the following code:
 
 ```tsx
-import { useSaleorAuthContext, useSaleorExternalAuth } from "@saleor/auth-sdk/react";
-import { ExternalProvider } from "@saleor/auth-sdk";
+import { useFylindeAuthContext, useFylindeExternalAuth } from "@fylinde/auth-sdk/react";
+import { ExternalProvider } from "@fylinde/auth-sdk";
 import Link from "next/link";
 import { gql, useQuery } from "@apollo/client";
 
@@ -354,13 +354,13 @@ export default function Home() {
       }
     }
   `);
-  const { authURL, loading: isLoadingExternalAuth } = useSaleorExternalAuth({
-    saleorApiUrl,
+  const { authURL, loading: isLoadingExternalAuth } = useFylindeExternalAuth({
+    fylindeApiUrl,
     provider: ExternalProvider.OpenIDConnect,
     redirectURL: "<your Next.js app>/api/auth/callback",
   });
 
-  const { signOut } = useSaleorAuthContext();
+  const { signOut } = useFylindeAuthContext();
 
   if (isLoadingExternalAuth || isLoadingCurrentUser) {
     return <div>Loading...</div>;
@@ -388,22 +388,22 @@ export default function Home() {
 You also need to define the auth callback. In `pages/api/auth` create the `callback.ts` with the following content:
 
 ```ts
-import { ExternalProvider, SaleorExternalAuth } from "@saleor/auth-sdk";
-import { createSaleorExternalAuthHandler } from "@saleor/auth-sdk/next";
+import { ExternalProvider, FylindeExternalAuth } from "@fylinde/auth-sdk";
+import { createFylindeExternalAuthHandler } from "@fylinde/auth-sdk/next";
 
-const externalAuth = new SaleorExternalAuth("<your Saleor instance URL>", ExternalProvider.OpenIDConnect);
+const externalAuth = new FylindeExternalAuth("<your Fylinde instance URL>", ExternalProvider.OpenIDConnect);
 
-export default createSaleorExternalAuthHandler(externalAuth);
+export default createFylindeExternalAuthHandler(externalAuth);
 ```
 
 ## FAQ
 
 ## How do I reset password?
 
-The `SaleorAuthClient` class provides you with a reset password method. If the reset password mutation is successful, it will log you in automatically, just like after a regular sign-in. The [`onSignIn` method of `useAuthChange` hook](#how-do-i-tell-my-graphql-client-to-refresh-queries-on-signin--signout) will also be triggered.
+The `FylindeAuthClient` class provides you with a reset password method. If the reset password mutation is successful, it will log you in automatically, just like after a regular sign-in. The [`onSignIn` method of `useAuthChange` hook](#how-do-i-tell-my-graphql-client-to-refresh-queries-on-signin--signout) will also be triggered.
 
 ```javascript
-const { resetPassword } = useSaleorAuthContext();
+const { resetPassword } = useFylindeAuthContext();
 
 const response = await resetPassword({
   email: "example@mail.com",

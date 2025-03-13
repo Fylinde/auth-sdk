@@ -1,9 +1,9 @@
 import type { StorageRepository } from "./types";
 
 export const getAccessTokenKey = (prefix?: string) =>
-  [prefix, "saleor_auth_access_token"].filter(Boolean).join("+");
+  [prefix, "fylinde_auth_access_token"].filter(Boolean).join("+");
 
-export class SaleorAccessTokenStorageHandler {
+export class FylindeAccessTokenStorageHandler {
   constructor(
     private storage: StorageRepository,
     private prefix?: string,
